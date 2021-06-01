@@ -1,3 +1,5 @@
-# Traversing Computation with python-Openpyxl
+# Closed-Loop Traversing Computation with python-Openpyxl (Not Completed!!!!)
 
-A python script that calculate the Northens,Easterns, Latitude and Longitude given the Included Angles of points and Distances between them
+A python script that calculate the Northens,Easterns, Latitude and Longitude of points given the Included Angles of the Points and the Distances between them.
+
+![A preview of the worksheet](./traverse.png)
