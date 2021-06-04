@@ -126,8 +126,8 @@ for i in range(2,1+numberOfSides):
 check  = float(sheet.cell(row=pageNum-2,column=6).value) + 180 + float(sheet.cell(row=2, column=5).value)
 if check > 360:
     check =check-360
-sheet[f'F{pageNum}'].fill = PatternFill(bgColor='71FF33')
-sheet[f'F{pageNum}'].value = check
+sheet[f'F{pageNum-1}'].fill = PatternFill(bgColor='71FF33')
+sheet[f'F{pageNum-1}'].value = check
 
 # -------------xxxxxxxx-----------------------------------------
 
@@ -170,11 +170,71 @@ for i in range(2,2+numberOfSides):
     sheet.cell(row=i,column=8).value = round(latitudeOfLine,2)
 
 
-# Computing for the Total Departure in Cell G
+# Computing for the Total Latitude in Cell H
 count = 0
 for i in range(2,2+numberOfSides):
     totalLatitude = sheet.cell(row=i, column=8).value
     count += totalLatitude
 sheet[f'H{pageNum}'].value = count
+# -----------------------xxxxxxxx-------------------------------
+
+
+
+
+errLat = sheet[f'H{pageNum}'].value
+errDep = sheet[f'G{pageNum}'].value
+
+# round(math.sqrt((errDep**2)+(errLat**2)),3)
+linearMisclosure = math.sqrt((errDep**2)+(errLat**2))
+totalDistance = sheet[f'C{pageNum}'].value
+
+# totalDistance/linearMisclosure
+fractionalMilosure = totalDistance/linearMisclosure
+sheet[f'B{pageNum+1}'].value = f' 1 / {math.ceil(fractionalMilosure)}'
+# Distance of a Line / Total Distance
+# def perDistance():
+#     pass
+# perDistance = 5
+
+# print(f'{totalDistance} / {linearMisclosure} = {fractionalMilosure}')
+# print(linearMisclosure)
+
+# --------------------------------------------------------------
+# Computing for the Latitude in Cell I
+sheet.cell(row=1, column=9).value = 'errorDeparture'
+for i in range(2,2+numberOfSides):
+    perDistance = sheet.cell(row=i, column=3).value
+    distancePerTotalDistance = perDistance/totalDistance
+    errorPerLine = distancePerTotalDistance * -sheet[f'G{pageNum}'].value 
+
+    sheet.cell(row=i,column=9).value = errorPerLine
+
+# Computing for the Total errorDeparture in Cell I
+count = 0
+for i in range(2,2+numberOfSides):
+    totalErrorDept = sheet.cell(row=i, column=9).value
+    count += totalErrorDept
+sheet[f'I{pageNum}'].value = count
+# -----------------------xxxxxxxx-------------------------------
+
+
+
+
+# --------------------------------------------------------------
+# Computing for the Latitude in Cell J
+sheet.cell(row=1, column=10).value = 'errorLatitude'
+for i in range(2,2+numberOfSides):
+    perDistance = sheet.cell(row=i, column=3).value
+    distancePerTotalDistance = perDistance/totalDistance
+    errorPerLine = distancePerTotalDistance * -sheet[f'H{pageNum}'].value 
+
+    sheet.cell(row=i,column=10).value = errorPerLine
+
+# Computing for the Total errorLatitude in Cell J
+count = 0
+for i in range(2,2+numberOfSides):
+    totalErrorLat = sheet.cell(row=i, column=10).value
+    count +=  totalErrorLat
+sheet[f'J{pageNum}'].value = count
 # -----------------------xxxxxxxx-------------------------------
 wb.save('test1.xlsx')
