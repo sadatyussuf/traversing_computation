@@ -30,6 +30,7 @@ sheet[f'A{pageNum}'].value = 'Total'
 count = 0
 for i in range(2,2+numberOfSides):
     angles = sheet.cell(row=i,column=2).value
+    # angle = eval(angles[1:])
     angle = eval(angles[1:])
     count += angle
 
@@ -64,19 +65,6 @@ for i in range(2,2+numberOfSides):
 sheet[f'C{pageNum}'].value = count
 # -------------xxxxxxxxxxx-----------------------------------------
 
-
-
-# --------------------OLd Way Of Adjusting Error--------------------------------
-#  Miscole to correct the included angle
-# Misclose = 3 * (10 / 3600) * math.sqrt(numberOfSides)
-
-# if Misclose < ((1 / 60) + (50 / 3600)):
-#     Misclose = (1 / 60)
-# else:
-#     Misclose= Misclose
-
-# adjPerAngle = -(Misclose/numberOfSides)
-# ----------------------xxxxxxxxxxxx------------------------------------------
 
 
 
@@ -237,4 +225,41 @@ for i in range(2,2+numberOfSides):
     count +=  totalErrorLat
 sheet[f'J{pageNum}'].value = count
 # -----------------------xxxxxxxx-------------------------------
-wb.save('test1.xlsx')
+
+
+
+
+# --------------------------------------------------------------
+# Computing for the Corrected Departure in Cell K
+sheet.cell(row=1, column=11).value = 'correctedDeparture'
+for i in range(2,2+numberOfSides):
+    # Corrected  Departure =  Departure + errorDeparture
+    corrDept =  sheet.cell(row=i,column=7).value + sheet.cell(row=i,column=9).value 
+    sheet.cell(row=i,column=11).value = corrDept
+
+# Computing for the Total correctedDeparture in Cell K
+count = 0
+for i in range(2,2+numberOfSides):
+    totalCorrDept = sheet.cell(row=i, column=11).value
+    count += totalCorrDept
+sheet[f'K{pageNum}'].value =round(count,1) 
+# -----------------------xxxxxxxx-------------------------------
+
+
+
+# --------------------------------------------------------------
+# Computing for the Corrected Latitude in Cell L
+sheet.cell(row=1, column=12).value = 'correctedLatitude'
+for i in range(2,2+numberOfSides):
+    # Corrected Latitude = Latitude + errorLatitude
+    corrLat =  sheet.cell(row=i,column=8).value + sheet.cell(row=i,column=10).value 
+    sheet.cell(row=i,column=12).value = corrLat
+
+# Computing for the Total Corrected Latitude in Cell L
+count = 0
+for i in range(2,2+numberOfSides):
+    totalCorrLat = sheet.cell(row=i, column=12).value
+    count += totalCorrLat
+sheet[f'L{pageNum}'].value = round(count,1)
+# -----------------------xxxxxxxx-------------------------------
+wb.save('results.xlsx')
