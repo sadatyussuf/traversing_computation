@@ -3,19 +3,31 @@ from openpyxl.styles import PatternFill
 import math
 
 # lOADING THE EXCEL WORKBOOK
-wb = openpyxl.load_workbook('traverse.xlsx')
+wb = openpyxl.load_workbook('Book1.xlsx')
 sheet = wb['Sheet1']
 sheet.title = 'Original'
 
 
 # Input from User
-numberOfSides = 5
-givenBearing = 0
+numberOfSides = eval(input("Input the Number of Side: "))
+degreesBearing = eval(input("Input the degrees Bearings: "))
+minutesBearing = eval(input("Input the minutes Bearings: "))
+secondsBearing = eval(input("Input the seconds Bearings: "))
+
+givenBearing = ( degreesBearing + (minutesBearing /60)+( secondsBearing /3600) )
+
+
+# numberOfSides = 5
+# givenBearing = 0
+
 # numberOfSides = 4
 # givenBearing = (140+(11/60)+(40/3600))
 
-givenEasting = 1000
-givenNorthing = 1000
+givenEasting = eval(input("Input the given Eastings: "))
+givenNorthing = eval(input("Input the given Northings: "))
+
+# givenEasting = 1000
+# givenNorthing = 1000
 
 
 
@@ -178,14 +190,12 @@ totalDistance = sheet[f'C{pageNum}'].value
 
 # totalDistance/linearMisclosure
 fractionalMilosure = totalDistance/linearMisclosure
-sheet[f'B{pageNum+1}'].value = f' 1 / {math.ceil(fractionalMilosure)}'
-# Distance of a Line / Total Distance
-# def perDistance():
-#     pass
-# perDistance = 5
+sheet[f'A{pageNum+1}'].value = 'Fractional Misclosure'
+figure =math.ceil(fractionalMilosure)
+sheet[f'B{pageNum+1}'].value = f'1 / {figure}'
 
-# print(f'{totalDistance} / {linearMisclosure} = {fractionalMilosure}')
-# print(linearMisclosure)
+
+
 
 # --------------------------------------------------------------
 # Computing for the Latitude in Cell I
@@ -247,6 +257,7 @@ sheet[f'K{pageNum}'].value =round(count,1)
 
 
 
+
 # --------------------------------------------------------------
 # Computing for the Corrected Latitude in Cell L
 sheet.cell(row=1, column=12).value = 'correctedLatitude'
@@ -261,5 +272,35 @@ for i in range(2,2+numberOfSides):
     totalCorrLat = sheet.cell(row=i, column=12).value
     count += totalCorrLat
 sheet[f'L{pageNum}'].value = round(count,1)
+# -----------------------xxxxxxxx-------------------------------
+
+
+
+
+# --------------------------------------------------------------
+# Computing for the Eastings in Cell M
+sheet.cell(row=1, column=13).value = 'Eastings'
+sheet.cell(row=2, column=13).value = givenEasting
+for i in range(2,2+numberOfSides):
+    
+    eastings = sheet.cell(row=i,column=13).value  + sheet.cell(row=i,column=11).value
+    sheet.cell(row=i+1,column=13).value = round(eastings,2)
+
+sheet[f'M{pageNum-1}'].fill = PatternFill(bgColor='71FF33')
+# -----------------------xxxxxxxx-------------------------------
+
+
+
+
+
+# --------------------------------------------------------------
+# Computing for the Northings in Cell N
+sheet.cell(row=1, column=14).value = 'Northings'
+sheet.cell(row=2, column=14).value = givenNorthing
+for i in range(2,2+numberOfSides):
+    
+    northings = sheet.cell(row=i,column=14).value  + sheet.cell(row=i,column=12).value
+    sheet.cell(row=i+1,column=14).value = round(northings,2)
+sheet[f'N{pageNum-1}'].fill = PatternFill(bgColor='71FF33')
 # -----------------------xxxxxxxx-------------------------------
 wb.save('results.xlsx')
